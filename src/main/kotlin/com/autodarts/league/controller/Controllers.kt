@@ -20,9 +20,16 @@ class PlayerController(
 
     @PostMapping
     fun createPlayer(@RequestBody request: CreatePlayerRequest): ResponseEntity<PlayerResponse> {
-        // Return existing player if username already registered
+        // Return existing player if username already registered,
+        // updating their autodartsUserId if we now have it and they don't.
         val existing = playerRepository.findByAutodartsUsername(request.autodartsUsername)
-        if (existing != null) return ResponseEntity.ok(PlayerResponse.from(existing))
+        if (existing != null) {
+            if (existing.autodartsUserId == null && request.autodartsUserId != null) {
+                val updated = playerRepository.save(existing.copy(autodartsUserId = request.autodartsUserId))
+                return ResponseEntity.ok(PlayerResponse.from(updated))
+            }
+            return ResponseEntity.ok(PlayerResponse.from(existing))
+        }
 
         val player = playerRepository.save(
             Player(
