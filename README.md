@@ -77,3 +77,4 @@ Access the database at: `http://localhost:8080/h2-console`
 
 - Build Angular frontend
 - Build browser extension to capture AutoDarts results
+https://api.autodarts.io/gs/v0/lobbies/019c7ace-b9ae-792a-bcda-b6a24af8e562/invitations/141d569b-7513-41d1-ac18-02913190aeb3

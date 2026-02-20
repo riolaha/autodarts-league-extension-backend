@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 
 enum class TournamentStatus {
-    CREATED, IN_PROGRESS, COMPLETED
+    CREATED, IN_PROGRESS, COMPLETED, ENDED
 }
 
 enum class FixtureStatus {

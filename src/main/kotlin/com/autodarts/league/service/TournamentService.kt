@@ -63,9 +63,15 @@ class TournamentService(
 
     fun deleteTournament(id: Long) {
         val tournament = getTournament(id)
-        fixtureRepository.deleteByTournamentId(tournament.id!!)
-        tournamentPlayerRepository.deleteByTournamentId(tournament.id!!)
-        tournamentRepository.delete(tournament)
+        tournament.status = TournamentStatus.ENDED
+        tournamentRepository.save(tournament)
+
+        val fixtures = fixtureRepository.findByTournamentId(id)
+        fixtures.forEach {
+            fixture -> fixture.status = FixtureStatus.COMPLETED
+        }
+
+        fixtureRepository.saveAll(fixtures)
     }
 
     fun getFixtures(tournamentId: Long): List<Fixture> =
@@ -144,6 +150,12 @@ class TournamentService(
      * Returns null if no matching pending fixture was found (game is not part of this tournament).
      */
     fun submitAutodartsGameResult(request: AutodartsGameResultRequest): Fixture? {
+        // Reject duplicate submissions — same Autodarts game already recorded
+        if (request.autodartsGameId != null &&
+            fixtureRepository.findByAutodartsGameId(request.autodartsGameId) != null) {
+            return null
+        }
+
         // Try UUID first (real accounts), fall back to username (local/guest games)
         var homePlayer = request.homePlayerUserId?.let { playerRepository.findByAutodartsUserId(it) }
             ?: playerRepository.findByAutodartsUsername(request.homePlayerUsername)

@@ -28,6 +28,7 @@ interface TournamentPlayerRepository : JpaRepository<TournamentPlayer, Long> {
 interface FixtureRepository : JpaRepository<Fixture, Long> {
     fun findByTournamentIdOrderByRoundNumberAsc(tournamentId: Long): List<Fixture>
     fun findByTournamentIdAndRoundNumber(tournamentId: Long, roundNumber: Int): List<Fixture>
+    fun findByTournamentId(tournamentId: Long): List<Fixture>
 
     @Modifying
     @Query("DELETE FROM Fixture f WHERE f.tournament.id = :tournamentId")
@@ -39,4 +40,6 @@ interface FixtureRepository : JpaRepository<Fixture, Long> {
         AND f.status = 'COMPLETED'
     """)
     fun findCompletedFixtures(tournamentId: Long): List<Fixture>
+
+    fun findByAutodartsGameId(autodartsGameId: String): Fixture?
 }
