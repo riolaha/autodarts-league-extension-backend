@@ -1,0 +1,9 @@
+.gradle/
+build/
+bin/
+data/
+*.db
+.idea/
+*.iml
+.DS_Store
+.claude/
